@@ -1,1 +1,1 @@
-#AKOA NI
+#MAIN NI HA!
