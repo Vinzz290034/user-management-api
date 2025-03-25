@@ -1,19 +1,24 @@
 import { Router } from "express";
 import { User } from "../entity/User";
 import { AppDataSource } from "../index";
+import bcrypt from 'bcrypt';
 
 const router = Router();
 
 router.post("/", async (req, res) => {
+
   const { name, email, password } = req.body;
 
+  const hashedPassword = await bcrypt.hash(password, 10); 
+
   const user = new User();
-  user.name = name;
-  user.email = email;
-  user.password = password;
+  user.firstName = req.body.firstName; 
+  user.lastName = req.body.lastName;  
+  user.email = req.body.email;
+  user.password = hashedPassword;
 
   await AppDataSource.manager.save(user);
-  res.json(user);
+  res.status(201).json(user);
   
 });
 
@@ -22,7 +27,7 @@ router.delete("/:id", async (req, res) => {
   const result = await AppDataSource.manager.delete(User, id);
 
   if (result.affected === 0) {
-    return res.status(404).send("User not found");
+    res.status(404).send("User not found");
   }
   res.send("User deleted successfully");
 });
@@ -37,7 +42,7 @@ router.get("/:id", async (req, res) => {
   const user = await AppDataSource.manager.findOne(User, { where: { id: Number(id) } });
 
   if (!user) {
-    return res.status(404).send("User not found");
+    res.status(404).send("User not found");
   }
   res.json(user);
 });

@@ -3,7 +3,7 @@
     "host": "localhost",
     "port": 3306,
     "username": "root",
-    "password": "yourpassword",
+    "password": "Anyaforger_290034",
     "database": "user_management",
     "synchronize": true,
     "logging": false,
