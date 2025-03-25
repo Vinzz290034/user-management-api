@@ -1,15 +1,27 @@
+// src/index.ts
 import express from 'express';
+import { AppDataSource } from './data-source'; // Assuming you have a data-source setup for TypeORM
 import userRoutes from './routes/user';
-import { AppDataSource } from './data-source';
+import bodyParser from 'body-parser';
 
 const app = express();
-app.use(express.json());
+const port = 3000;
 
-app.use('/users', userRoutes);
-
+// Connect to the database
 AppDataSource.initialize()
-    .then(() => {
-        console.log("Database connected!");
-        app.listen(5000, () => console.log('Server running on port 5000'));
-    })
-    .catch(error => console.log(error));
+  .then(() => {
+    console.log('Data Source has been initialized!');
+
+    // Middleware to parse JSON request bodies
+    app.use(bodyParser.json());
+
+    // Register the user routes
+    app.use('/api', userRoutes); // You might want a base API path
+
+    app.listen(port, () => {
+      console.log(`Server is running on http://localhost:${port}`);
+    });
+  })
+  .catch((err) => {
+    console.error('Error during Data Source initialization:', err);
+  });
